@@ -1,5 +1,6 @@
 import { ComponentType, FC, ReactElement, useCallback, useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, ImageStyle, StyleSheet, TextStyle, View, ViewStyle } from "react-native"
+import { useNavigation } from "@react-navigation/native"
 import { ContentStyle } from "@shopify/flash-list"
 import Animated, {
   Extrapolation,
@@ -19,9 +20,10 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Switch } from "@/components/Toggle/Switch"
 import { useAnime, useAnimeList } from "@/context/AnimeContext"
-import { isRTL, TxKeyPath } from "@/i18n"
+import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
-import { DemoTabScreenProps } from "@/navigators/DemoNavigator"
+import { AnimeTabScreenProps } from "@/navigators/AnimeNavigator"
+import { AnimeDetails } from "@/screens/DetailsScreen"
 import type { JikenAnimeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
@@ -34,9 +36,9 @@ export interface Demo {
   data: ({ themed, theme }: { themed: any; theme: Theme }) => ReactElement[]
 }
 
-export const HomeScreen: FC<DemoTabScreenProps<"Home">> = function HomeScreen(_props) {
+export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_props) {
   const { themed } = useAppTheme()
-  const { animeForList, fetchAnimeList, favoritesOnly, toggleFavoritesOnly, toggleFavorite } =
+  const { animeForList, fetchAnimeList, favouritesOnly, toggleFavouritesOnly, toggleFavourite } =
     useAnimeList()
 
   const [refreshing, setRefreshing] = useState(false)
@@ -76,25 +78,25 @@ export const HomeScreen: FC<DemoTabScreenProps<"Home">> = function HomeScreen(_p
               preset="generic"
               style={themed($emptyState)}
               headingTx={
-                favoritesOnly ? "demoPodcastListScreen:noFavoritesEmptyState.heading" : undefined
+                favouritesOnly ? "demoPodcastListScreen:noFavoritesEmptyState.heading" : undefined
               }
               contentTx={
-                favoritesOnly ? "demoPodcastListScreen:noFavoritesEmptyState.content" : undefined
+                favouritesOnly ? "demoPodcastListScreen:noFavoritesEmptyState.content" : undefined
               }
-              button={favoritesOnly ? "" : undefined}
+              button={favouritesOnly ? "" : undefined}
               buttonOnPress={manualRefresh}
-              imageStyle={$emptyStateImage}
               ImageProps={{ resizeMode: "contain" }}
             />
           )
         }
         ListHeaderComponent={
           <View style={themed($heading)}>
-            {(favoritesOnly || animeForList.length > 0) && (
+            <Text preset="heading" text="AnimeExplorer" />
+            {(favouritesOnly || animeForList.length > 0) && (
               <View style={themed($toggle)}>
                 <Switch
-                  value={favoritesOnly}
-                  onValueChange={() => toggleFavoritesOnly()}
+                  value={favouritesOnly}
+                  onValueChange={() => toggleFavouritesOnly()}
                   labelTx="demoPodcastListScreen:onlyFavorites"
                   labelPosition="left"
                   labelStyle={$labelStyle}
@@ -104,19 +106,8 @@ export const HomeScreen: FC<DemoTabScreenProps<"Home">> = function HomeScreen(_p
             )}
           </View>
         }
-        // renderItem={({ item }) => (
-        //   <TouchableOpacity activeOpacity={0.8} style={{ flex: 1, margin: spacing.sm }}>
-        //     <Card
-        //       HeadingComponent={
-        //         <AutoImage source={{ uri: item.images.jpg.image_url }} style={{ width: "100%", height: 200 }} />
-        //       }
-        //       content={item.title}
-        //     />
-        //   </TouchableOpacity>
-        // )}
-
         renderItem={({ item }) => (
-          <AnimeCard anime={item} onPressFavorite={() => toggleFavorite(item)} />
+          <AnimeCard animeItem={item} onPressFavorite={() => toggleFavourite(item)} />
         )}
       />
     </Screen>
@@ -124,19 +115,21 @@ export const HomeScreen: FC<DemoTabScreenProps<"Home">> = function HomeScreen(_p
 }
 
 const AnimeCard = ({
-  anime,
+  animeItem,
   onPressFavorite,
 }: {
-  anime: JikenAnimeItem
+  animeItem: JikenAnimeItem
   onPressFavorite: () => void
 }) => {
   const {
     theme: { colors },
     themed,
   } = useAppTheme()
-  const { imageUrl, title, isFavorite } = useAnime(anime)
+  const { imageUrl, title, isFavourite, datePublished, duration, synopsis, genres } =
+    useAnime(animeItem)
+  const navigation = useNavigation()
 
-  const liked = useSharedValue(isFavorite ? 1 : 0)
+  const liked = useSharedValue(isFavourite ? 1 : 0)
 
   // Grey heart
   const animatedLikeButtonStyles = useAnimatedStyle(() => {
@@ -168,7 +161,15 @@ const AnimeCard = ({
   }, [liked, onPressFavorite])
 
   const navigateToDetailsScreen = () => {
-    // TODO navigate to details screen
+    const animeDetails: AnimeDetails = {
+      imageUrl,
+      title,
+      datePublished: datePublished.textLabel,
+      duration,
+      synopsis,
+      genres,
+    }
+    navigation.navigate("Details", { anime: animeDetails })
   }
 
   const ButtonLeftAccessory: ComponentType<ButtonAccessoryProps> = useMemo(
@@ -209,26 +210,19 @@ const AnimeCard = ({
     <Card
       style={themed($item)}
       onPress={navigateToDetailsScreen}
-      onLongPress={handlePressFavorite}
       HeadingComponent={<AutoImage source={{ uri: imageUrl }} style={themed($itemImage)} />}
       content={title}
       FooterComponent={
         <Button
           onPress={handlePressFavorite}
-          onLongPress={handlePressFavorite}
-          style={themed([$favoriteButton, isFavorite && $unFavoriteButton])}
-          accessibilityLabel={
-            isFavorite
-              ? translate("demoPodcastListScreen:accessibility.unfavoriteIcon")
-              : translate("demoPodcastListScreen:accessibility.favoriteIcon")
-          }
+          style={themed([$favoriteButton, isFavourite && $unFavoriteButton])}
           LeftAccessory={ButtonLeftAccessory}
         >
           <Text
             size="xxs"
             weight="medium"
             text={
-              isFavorite
+              isFavourite
                 ? translate("demoPodcastListScreen:unfavoriteButton")
                 : translate("demoPodcastListScreen:favoriteButton")
             }
@@ -243,9 +237,7 @@ const AnimeCard = ({
 const ICON_SIZE = 14
 
 const $listContentContainer: ThemedStyle<ContentStyle> = ({ spacing }) => ({
-  paddingHorizontal: spacing.lg,
-  paddingTop: spacing.lg + spacing.xl,
-  paddingBottom: spacing.lg,
+  paddingHorizontal: spacing.sm,
 })
 
 const $heading: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -256,12 +248,8 @@ const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xxl,
 })
 
-const $emptyStateImage: ImageStyle = {
-  transform: [{ scaleX: isRTL ? -1 : 1 }],
-}
-
 const $toggle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.md,
+  marginTop: spacing.sm,
 })
 
 const $labelStyle: TextStyle = {

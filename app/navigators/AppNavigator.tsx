@@ -9,10 +9,11 @@ import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/na
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 
 import Config from "@/config"
+import { AnimeNavigator, AnimeTabParamList } from "@/navigators/AnimeNavigator"
+import { AnimeDetails, DetailsScreen } from "@/screens/DetailsScreen"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { useAppTheme } from "@/theme/context"
 
-import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 /**
@@ -25,7 +26,8 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
 export type AppStackParamList = {
-  Demo: NavigatorScreenParams<DemoTabParamList>
+  Anime: NavigatorScreenParams<AnimeTabParamList>
+  Details: { anime?: AnimeDetails }
 }
 
 /**
@@ -56,9 +58,10 @@ const AppStack = () => {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={"Demo"}
+      initialRouteName={"Anime"}
     >
-      <Stack.Screen name="Demo" component={DemoNavigator} />
+      <Stack.Screen name="Anime" component={AnimeNavigator} />
+      <Stack.Screen name="Details" component={DetailsScreen} />
     </Stack.Navigator>
   )
 }
