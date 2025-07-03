@@ -4,20 +4,20 @@ import { CompositeScreenProps } from "@react-navigation/native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Icon } from "@/components/Icon"
-import { EpisodeProvider } from "@/context/EpisodeContext"
+import { AnimeProvider } from "@/context/AnimeContext"
 import { translate } from "@/i18n/translate"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
 import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 import { DemoPodcastListScreen } from "@/screens/DemoPodcastListScreen"
-import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
-import type { ThemedStyle } from "@/theme/types"
+import { HomeScreen } from "@/screens/DemoShowroomScreen/HomeScreen"
 import { useAppTheme } from "@/theme/context"
+import type { ThemedStyle } from "@/theme/types"
 
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
 export type DemoTabParamList = {
   DemoCommunity: undefined
-  DemoShowroom: { queryIndex?: string; itemIndex?: string }
+  Home: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
   DemoPodcastList: undefined
 }
@@ -49,7 +49,7 @@ export function DemoNavigator() {
   } = useAppTheme()
 
   return (
-    <EpisodeProvider>
+    <AnimeProvider>
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -62,8 +62,8 @@ export function DemoNavigator() {
         }}
       >
         <Tab.Screen
-          name="DemoShowroom"
-          component={DemoShowroomScreen}
+          name="Home"
+          component={HomeScreen}
           options={{
             tabBarLabel: translate("demoNavigator:componentsTab"),
             tabBarIcon: ({ focused }) => (
@@ -114,7 +114,7 @@ export function DemoNavigator() {
           }}
         />
       </Tab.Navigator>
-    </EpisodeProvider>
+    </AnimeProvider>
   )
 }
 
