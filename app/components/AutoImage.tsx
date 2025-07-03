@@ -85,5 +85,10 @@ export function AutoImage(props: AutoImageProps) {
     [maxWidth, maxHeight],
   )
 
+  ImageProps.onError = (e) => {
+    console.warn("AutoImage failed to load image:", e.nativeEvent.error)
+    ImageProps.source = require("../../assets/images/sad-face.png")
+  }
+
   return <Image {...ImageProps} style={[{ width, height }, props.style]} />
 }
