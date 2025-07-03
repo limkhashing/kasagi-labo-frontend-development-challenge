@@ -16,10 +16,10 @@ import { formatDate } from "@/utils/formatDate"
 export type AnimeContextType = {
   animeForList: JikenAnimeItem[]
   fetchAnimeList: () => Promise<void>
-  favoritesOnly: boolean
-  toggleFavoritesOnly: () => void
-  hasFavorite: (episode: JikenAnimeItem) => boolean
-  toggleFavorite: (episode: JikenAnimeItem) => void
+  favouritesOnly: boolean
+  toggleFavouritesOnly: () => void
+  hasFavourite: (episode: JikenAnimeItem) => boolean
+  toggleFavourite: (episode: JikenAnimeItem) => void
 }
 
 export const AnimeContext = createContext<AnimeContextType | null>(null)
@@ -28,8 +28,8 @@ export interface AnimeProviderProps {}
 
 export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ children }) => {
   const [animeList, setAnimeList] = useState<JikenAnimeItem[]>([])
-  const [favorites, setFavorites] = useState<number[]>([])
-  const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false)
+  const [favourites, setFavourites] = useState<number[]>([])
+  const [favouritesOnly, setFavouritesOnly] = useState<boolean>(false)
 
   const fetchAnimeList = useCallback(async () => {
     const response = await api.fetchAnimeList()
@@ -40,37 +40,36 @@ export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ child
     }
   }, [])
 
-  const toggleFavoritesOnly = useCallback(() => {
-    setFavoritesOnly((prev) => !prev)
+  const hasFavourite = useCallback(
+    (anime: JikenAnimeItem) => favourites.some((fav) => fav === anime.mal_id),
+    [favourites],
+  )
+
+  const toggleFavourite = useCallback((anime: JikenAnimeItem) => {
+    setFavourites((previous) =>
+      previous.includes(anime.mal_id)
+        ? previous.filter((favourite) => favourite !== anime.mal_id)
+        : [...previous, anime.mal_id],
+    )
   }, [])
 
-  const toggleFavorite = useCallback(
-    (anime: JikenAnimeItem) => {
-      if (favorites.some((fav) => fav === anime.mal_id)) {
-        setFavorites((prev) => prev.filter((fav) => fav !== anime.mal_id))
-      } else {
-        setFavorites((prev) => [...prev, anime.mal_id])
-      }
-    },
-    [favorites],
-  )
-
-  const hasFavorite = useCallback(
-    (episode: JikenAnimeItem) => favorites.some((fav) => fav === episode.mal_id),
-    [favorites],
-  )
+  const toggleFavouritesOnly = useCallback(() => {
+    setFavouritesOnly((prev) => !prev)
+  }, [])
 
   const animeForList = useMemo(() => {
-    return favoritesOnly ? animeList.filter((anime) => favorites.includes(anime.mal_id)) : animeList
-  }, [animeList, favorites, favoritesOnly])
+    return favouritesOnly
+      ? animeList.filter((anime) => favourites.includes(anime.mal_id))
+      : animeList
+  }, [animeList, favourites, favouritesOnly])
 
   const value = {
     animeForList,
     fetchAnimeList,
-    favoritesOnly,
-    toggleFavoritesOnly,
-    hasFavorite,
-    toggleFavorite,
+    favouritesOnly,
+    toggleFavouritesOnly,
+    hasFavourite,
+    toggleFavourite,
   }
 
   return <AnimeContext.Provider value={value}>{children}</AnimeContext.Provider>
@@ -84,22 +83,21 @@ export const useAnimeList = () => {
 
 // A helper hook to extract and format anime details
 export const useAnime = (anime: JikenAnimeItem) => {
-  const { hasFavorite } = useAnimeList()
+  const { hasFavourite } = useAnimeList()
 
   const imageUrl = anime.images?.jpg?.image_url || anime.images?.webp?.image_url || ""
-  const isFavorite = hasFavorite(anime)
+  const isFavourite = hasFavourite(anime)
   const title = anime.title
   let datePublished
   try {
     const formatted = formatDate(anime.aired.from)
     datePublished = {
-      textLabel: formatted,
-      accessibilityLabel: translate("demoPodcastListScreen:accessibility.publishLabel", {
+      textLabel: translate("demoPodcastListScreen:accessibility.publishLabel", {
         date: formatted,
       }),
     }
   } catch {
-    datePublished = { textLabel: "", accessibilityLabel: "" }
+    datePublished = { textLabel: "" }
   }
   const duration = anime.duration
   const synopsis = anime.synopsis
@@ -108,7 +106,7 @@ export const useAnime = (anime: JikenAnimeItem) => {
   return {
     imageUrl,
     title,
-    isFavorite,
+    isFavourite,
     datePublished,
     duration,
     synopsis,

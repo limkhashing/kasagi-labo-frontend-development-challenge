@@ -62,12 +62,6 @@ export interface JikenAnimeItem {
     webp: { image_url: string; small_image_url: string; large_image_url: string }
   }
   title: string
-  title_english?: string
-  title_japanese?: string
-  type: string
-  source: string
-  episodes: number | null
-  status: string
   airing: boolean
   aired: {
     from: string
