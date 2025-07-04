@@ -15,7 +15,7 @@ import { formatDate } from "@/utils/formatDate"
 
 export type AnimeContextType = {
   animeForList: JikenAnimeItem[]
-  fetchAnimeList: () => Promise<void>
+  fetchAnimeList: (page: number, limit?: number) => Promise<void>
   favouritesOnly: boolean
   toggleFavouritesOnly: () => void
   hasFavourite: (episode: JikenAnimeItem) => boolean
@@ -31,10 +31,10 @@ export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ child
   const [favourites, setFavourites] = useState<number[]>([])
   const [favouritesOnly, setFavouritesOnly] = useState<boolean>(false)
 
-  const fetchAnimeList = useCallback(async () => {
-    const response = await api.fetchAnimeList()
+  const fetchAnimeList = useCallback(async (page: number = 1, limit: number = 25) => {
+    const response = await api.fetchAnimeList(page, limit)
     if (response.kind === "ok") {
-      setAnimeList(response.animeList)
+      setAnimeList((prev) => (page === 1 ? response.animeList : [...prev, ...response.animeList]))
     } else {
       console.error(`Error fetching anime: ${JSON.stringify(response)}`)
     }

@@ -45,7 +45,10 @@ export const DetailsScreen: FC<DetailsScreenProps> = function DetailsScreen() {
   }
 
   return (
-    <ScrollView style={themed([scrollViewContainer, $topContainerInsets])}>
+    <ScrollView
+      style={themed([scrollViewContainer, $topContainerInsets])}
+      showsVerticalScrollIndicator={false}
+    >
       <View>
         <AutoImage source={{ uri: animeDetails.imageUrl }} />
 

@@ -22,7 +22,7 @@ import { Switch } from "@/components/Toggle/Switch"
 import { useAnime, useAnimeList } from "@/context/AnimeContext"
 import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
-import { AnimeTabScreenProps } from "@/navigators/AnimeNavigator"
+import { AnimeTabScreenProps } from "@/navigators/AnimeTabNavigator"
 import { AnimeDetails } from "@/screens/DetailsScreen"
 import type { JikenAnimeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
@@ -38,17 +38,19 @@ export interface Demo {
 
 export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_props) {
   const { themed } = useAppTheme()
-  const { animeForList, fetchAnimeList, favouritesOnly, toggleFavouritesOnly, toggleFavourite } =
-    useAnimeList()
-
   const [refreshing, setRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [page, setPage] = useState(1)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+
+  const { animeForList, fetchAnimeList, favouritesOnly, toggleFavouritesOnly, toggleFavourite } =
+    useAnimeList()
 
   // initially, kick off a background refresh without the refreshing UI
   useEffect(() => {
     ;(async function load() {
       setIsLoading(true)
-      await fetchAnimeList()
+      await fetchAnimeList(1)
       setIsLoading(false)
     })()
   }, [fetchAnimeList])
@@ -56,8 +58,16 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
   // simulate a longer refresh, if the refresh is too fast for UX
   async function manualRefresh() {
     setRefreshing(true)
-    await Promise.allSettled([fetchAnimeList(), delay(750)])
+    await Promise.allSettled([fetchAnimeList(1), delay(750)])
     setRefreshing(false)
+  }
+
+  const handleLoadMore = async () => {
+    if (isLoadingMore || isLoading) return
+    setIsLoadingMore(true)
+    await fetchAnimeList(page + 1)
+    setPage((prev) => prev + 1)
+    setIsLoadingMore(false)
   }
 
   return (
@@ -70,6 +80,7 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
         refreshing={refreshing}
         estimatedItemSize={25}
         onRefresh={manualRefresh}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           isLoading ? (
             <ActivityIndicator />
@@ -106,6 +117,9 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
             )}
           </View>
         }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
         renderItem={({ item }) => (
           <AnimeCard animeItem={item} onPressFavorite={() => toggleFavourite(item)} />
         )}
