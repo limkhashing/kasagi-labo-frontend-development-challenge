@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "@/components/Icon"
 import { AnimeProvider } from "@/context/AnimeContext"
 import { translate } from "@/i18n/translate"
-import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
+import { DebugScreen } from "@/screens/DebugScreen"
 import { HomeScreen } from "@/screens/DemoShowroomScreen/HomeScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -15,7 +15,7 @@ import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
 export type AnimeTabParamList = {
   Home: undefined
-  DemoDebug: undefined
+  Debug: undefined
 }
 
 /**
@@ -74,7 +74,7 @@ export function AnimeTabNavigator() {
 
         <Tab.Screen
           name="DemoDebug"
-          component={DemoDebugScreen}
+          component={DebugScreen}
           options={{
             tabBarLabel: translate("demoNavigator:debugTab"),
             tabBarIcon: ({ focused }) => (
