@@ -7,7 +7,7 @@ import { Icon } from "@/components/Icon"
 import { AnimeProvider } from "@/context/AnimeContext"
 import { translate } from "@/i18n/translate"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
-import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
+import { DebugScreen } from "@/screens/DebugScreen"
 import { DemoPodcastListScreen } from "@/screens/DemoPodcastListScreen"
 import { HomeScreen } from "@/screens/DemoShowroomScreen/HomeScreen"
 import { useAppTheme } from "@/theme/context"
@@ -105,7 +105,7 @@ export function DemoNavigator() {
 
         <Tab.Screen
           name="DemoDebug"
-          component={DemoDebugScreen}
+          component={DebugScreen}
           options={{
             tabBarLabel: translate("demoNavigator:debugTab"),
             tabBarIcon: ({ focused }) => (

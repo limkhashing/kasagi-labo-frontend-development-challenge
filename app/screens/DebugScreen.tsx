@@ -1,46 +1,25 @@
 import { FC, useCallback, useMemo } from "react"
-import {
-  LayoutAnimation,
-  Linking,
-  Platform,
-  TextStyle,
-  useColorScheme,
-  View,
-  ViewStyle,
-} from "react-native"
+import { LayoutAnimation, Platform, TextStyle, useColorScheme, View, ViewStyle } from "react-native"
 import * as Application from "expo-application"
 
 import { Button } from "@/components/Button"
 import { ListItem } from "@/components/ListItem"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { useAuth } from "@/context/AuthContext"
-import { isRTL } from "@/i18n"
-import { DemoTabScreenProps } from "@/navigators/DemoNavigator"
-import type { ThemedStyle } from "@/theme/types"
+import { AnimeTabScreenProps } from "@/navigators/AnimeTabNavigator"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
-
-/**
- * @param {string} url - The URL to open in the browser.
- * @returns {void} - No return value.
- */
-function openLinkInBrowser(url: string) {
-  Linking.canOpenURL(url).then((canOpen) => canOpen && Linking.openURL(url))
-}
+import type { ThemedStyle } from "@/theme/types"
 
 const usingHermes = typeof HermesInternal === "object" && HermesInternal !== null
 
-export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function DemoDebugScreen(
-  _props,
-) {
+export const DebugScreen: FC<AnimeTabScreenProps<"Debug">> = function DemoDebugScreen(_props) {
   const { setThemeContextOverride, themeContext, themed } = useAppTheme()
-  const { logout } = useAuth()
 
   // @ts-expect-error
   const usingFabric = global.nativeFabricUIManager != null
 
-  const demoReactotron = useMemo(
+  const reactotron = useMemo(
     () => async () => {
       if (__DEV__) {
         console.tron.display({
@@ -77,12 +56,6 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
       safeAreaEdges={["top"]}
       contentContainerStyle={[$styles.container, themed($container)]}
     >
-      <Text
-        style={themed($reportBugsLink)}
-        tx="demoDebugScreen:reportBugs"
-        onPress={() => openLinkInBrowser("https://github.com/infinitered/ignite/issues")}
-      />
-
       <Text style={themed($title)} preset="heading" tx="demoDebugScreen:title" />
       <Text preset="bold">Current system theme: {colorScheme}</Text>
       <Text preset="bold">Current app theme: {themeContext}</Text>
@@ -142,11 +115,8 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
         />
       </View>
       <View style={themed($buttonContainer)}>
-        <Button style={themed($button)} tx="demoDebugScreen:reactotron" onPress={demoReactotron} />
+        <Button style={themed($button)} tx="demoDebugScreen:reactotron" onPress={reactotron} />
         <Text style={themed($hint)} tx={`demoDebugScreen:${Platform.OS}ReactotronHint` as const} />
-      </View>
-      <View style={themed($buttonContainer)}>
-        <Button style={themed($button)} tx="common:logOut" onPress={logout} />
       </View>
     </Screen>
   )
@@ -158,12 +128,6 @@ const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $title: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.xxl,
-})
-
-const $reportBugsLink: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.tint,
-  marginBottom: spacing.lg,
-  alignSelf: isRTL ? "flex-start" : "flex-end",
 })
 
 const $item: ThemedStyle<ViewStyle> = ({ spacing }) => ({
