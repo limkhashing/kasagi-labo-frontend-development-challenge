@@ -1,4 +1,4 @@
-import { ComponentType, FC, ReactElement, useCallback, useEffect, useMemo, useState } from "react"
+import { ComponentType, FC, useCallback, useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, ImageStyle, StyleSheet, TextStyle, View, ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { ContentStyle } from "@shopify/flash-list"
@@ -20,21 +20,14 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Switch } from "@/components/Toggle/Switch"
 import { useAnime, useAnimeList } from "@/context/AnimeContext"
-import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
 import { AnimeTabScreenProps } from "@/navigators/AnimeTabNavigator"
 import { AnimeDetails } from "@/screens/DetailsScreen"
 import type { JikenAnimeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
-import type { Theme, ThemedStyle } from "@/theme/types"
+import type { ThemedStyle } from "@/theme/types"
 import { delay } from "@/utils/delay"
-
-export interface Demo {
-  name: string
-  description: TxKeyPath
-  data: ({ themed, theme }: { themed: any; theme: Theme }) => ReactElement[]
-}
 
 export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_props) {
   const { themed } = useAppTheme()
@@ -88,12 +81,8 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
             <EmptyState
               preset="generic"
               style={themed($emptyState)}
-              headingTx={
-                favouritesOnly ? "demoPodcastListScreen:noFavoritesEmptyState.heading" : undefined
-              }
-              contentTx={
-                favouritesOnly ? "demoPodcastListScreen:noFavoritesEmptyState.content" : undefined
-              }
+              headingTx={favouritesOnly ? "emptyStateComponent:generic.heading" : undefined}
+              contentTx={favouritesOnly ? "emptyStateComponent:generic.content" : undefined}
               button={favouritesOnly ? "" : undefined}
               buttonOnPress={manualRefresh}
               ImageProps={{ resizeMode: "contain" }}
@@ -108,10 +97,9 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
                 <Switch
                   value={favouritesOnly}
                   onValueChange={() => toggleFavouritesOnly()}
-                  labelTx="demoPodcastListScreen:onlyFavorites"
+                  labelTx="homeTab:onlyFavorites"
                   labelPosition="left"
                   labelStyle={$labelStyle}
-                  accessibilityLabel={translate("demoPodcastListScreen:accessibility.switch")}
                 />
               </View>
             )}
@@ -237,8 +225,8 @@ const AnimeCard = ({
             weight="medium"
             text={
               isFavourite
-                ? translate("demoPodcastListScreen:unfavoriteButton")
-                : translate("demoPodcastListScreen:favoriteButton")
+                ? translate("homeTab:unfavoriteButton")
+                : translate("homeTab:favoriteButton")
             }
           />
         </Button>

@@ -7,7 +7,7 @@ import { Icon } from "@/components/Icon"
 import { AnimeProvider } from "@/context/AnimeContext"
 import { translate } from "@/i18n/translate"
 import { DebugScreen } from "@/screens/DebugScreen"
-import { HomeScreen } from "@/screens/DemoShowroomScreen/HomeScreen"
+import { HomeScreen } from "@/screens/HomeScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 
@@ -61,22 +61,18 @@ export function AnimeTabNavigator() {
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarLabel: translate("demoNavigator:componentsTab"),
+            tabBarLabel: translate("animeNavigatorTab:homeTab"),
             tabBarIcon: ({ focused }) => (
-              <Icon
-                icon="components"
-                color={focused ? colors.tint : colors.tintInactive}
-                size={30}
-              />
+              <Icon icon="home" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),
           }}
         />
 
         <Tab.Screen
-          name="DemoDebug"
+          name="Debug"
           component={DebugScreen}
           options={{
-            tabBarLabel: translate("demoNavigator:debugTab"),
+            tabBarLabel: translate("animeNavigatorTab:debugTab"),
             tabBarIcon: ({ focused }) => (
               <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),

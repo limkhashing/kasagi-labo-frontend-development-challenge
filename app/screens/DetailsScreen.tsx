@@ -37,7 +37,7 @@ export const DetailsScreen: FC<DetailsScreenProps> = function DetailsScreen() {
         <EmptyState
           preset="generic"
           style={themed($emptyState)}
-          headingTx="demoPodcastListScreen:noFavoritesEmptyState.heading"
+          contentTx="detailsScreen:noDetails"
           ImageProps={{ resizeMode: "contain" }}
         />
       </Screen>
