@@ -37,7 +37,7 @@ const Tab = createBottomTabNavigator<AnimeTabParamList>()
  * More info: https://reactnavigation.org/docs/bottom-tab-navigator/
  * @returns {JSX.Element} The rendered `DemoNavigator`.
  */
-export function AnimeNavigator() {
+export function AnimeTabNavigator() {
   const { bottom } = useSafeAreaInsets()
   const {
     themed,

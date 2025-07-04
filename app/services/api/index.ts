@@ -82,7 +82,8 @@ export class Api {
     limit: number = 25,
   ): Promise<{ kind: "ok"; animeList: JikenAnimeItem[] } | GeneralApiProblem> {
     const response: ApiResponse<JikenAnimeApiResponse> = await this.apisauce.get("/v4/anime", {
-      params: { page, limit },
+      page: page,
+      limit: limit,
     })
 
     if (!response.ok) {
@@ -90,15 +91,9 @@ export class Api {
       if (problem) return problem
     }
 
-    // transform the data into the format we are expecting
     try {
-      const rawData = response.data
-      const episodes: JikenAnimeItem[] =
-        rawData?.data?.map((raw) => ({
-          ...raw,
-        })) ?? []
-
-      return { kind: "ok", animeList: episodes }
+      const animeList = response.data?.data ?? []
+      return { kind: "ok", animeList: animeList }
     } catch (e) {
       if (__DEV__ && e instanceof Error) {
         console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
@@ -106,7 +101,6 @@ export class Api {
       return { kind: "bad-data" }
     }
   }
-
 }
 
 // Singleton instance of the API for convenience

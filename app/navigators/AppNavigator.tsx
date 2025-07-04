@@ -9,7 +9,7 @@ import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/na
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 
 import Config from "@/config"
-import { AnimeNavigator, AnimeTabParamList } from "@/navigators/AnimeNavigator"
+import { AnimeTabNavigator, AnimeTabParamList } from "@/navigators/AnimeTabNavigator"
 import { AnimeDetails, DetailsScreen } from "@/screens/DetailsScreen"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { useAppTheme } from "@/theme/context"
@@ -60,7 +60,7 @@ const AppStack = () => {
       }}
       initialRouteName={"Anime"}
     >
-      <Stack.Screen name="Anime" component={AnimeNavigator} />
+      <Stack.Screen name="Anime" component={AnimeTabNavigator} />
       <Stack.Screen name="Details" component={DetailsScreen} />
     </Stack.Navigator>
   )
