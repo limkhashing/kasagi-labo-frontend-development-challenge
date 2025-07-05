@@ -11,6 +11,7 @@ const fallbackLocale = "en-US"
 
 const systemLocales = Localization.getLocales()
 
+// TODO - Add more locales as needed, e.g., import es from "./cn" for Chinese translations
 const resources = { en }
 const supportedTags = Object.keys(resources)
 

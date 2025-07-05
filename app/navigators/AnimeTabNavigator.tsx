@@ -7,6 +7,7 @@ import { Icon } from "@/components/Icon"
 import { AnimeProvider } from "@/context/AnimeContext"
 import { translate } from "@/i18n/translate"
 import { DebugScreen } from "@/screens/DebugScreen"
+import { FavouritesScreen } from "@/screens/FavouritesScreen"
 import { HomeScreen } from "@/screens/HomeScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -15,6 +16,7 @@ import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
 export type AnimeTabParamList = {
   Home: undefined
+  Favourites: undefined
   Debug: undefined
 }
 
@@ -64,6 +66,17 @@ export function AnimeTabNavigator() {
             tabBarLabel: translate("animeNavigatorTab:homeTab"),
             tabBarIcon: ({ focused }) => (
               <Icon icon="home" color={focused ? colors.tint : colors.tintInactive} size={30} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="Favourites"
+          component={FavouritesScreen}
+          options={{
+            tabBarLabel: translate("animeNavigatorTab:favouritesTab"),
+            tabBarIcon: ({ focused }) => (
+              <Icon icon="heart" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),
           }}
         />

@@ -12,29 +12,44 @@ const en = {
     reset: "RESET APP",
     traceTitle: "Error from %{name} stack",
   },
-  emptyStateComponent: {
-    generic: {
+  animeNavigatorTab: {
+    homeTab: "Home",
+    favouritesTab: "Favourites",
+    debugTab: "Debug",
+  },
+  homeTab: {
+    header: "AnimeExplorer",
+    onlyFavorites: "Only Show Favorites",
+    favoriteButton: "Favorite",
+    unfavoriteButton: "Unfavorite",
+    emptyState: {
       heading: "So empty... so sad",
       content: "No data found yet. Try clicking the button to refresh or reload the app.",
       button: "Let's try this again",
     },
   },
-  animeNavigatorTab: {
-    homeTab: "Home",
-    debugTab: "Debug",
-  },
-  homeTab: {
-    onlyFavorites: "Only Show Favorites",
-    favoriteButton: "Favorite",
-    unfavoriteButton: "Unfavorite",
-  },
-  detailsScreen: {
-    noDetails: "No details available for this anime.",
-  },
   noFavoritesEmptyState: {
     heading: "This looks a bit empty",
     content:
       "No favorites have been added yet. Tap the heart on an anime to add it to your favorites!",
+  },
+  detailsScreen: {
+    noDetails: "No details available for this anime.",
+    aired: "Aired {{date}}",
+  },
+  debugScreen: {
+    title: "Debug Screen",
+    reactotron: "Send to Reactotron",
+    androidReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
+    iosReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    macosReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    webReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    windowsReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
   },
 }
 
