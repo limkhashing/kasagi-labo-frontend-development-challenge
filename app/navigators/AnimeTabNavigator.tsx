@@ -81,16 +81,18 @@ export function AnimeTabNavigator() {
           }}
         />
 
-        <Tab.Screen
-          name="Debug"
-          component={DebugScreen}
-          options={{
-            tabBarLabel: translate("animeNavigatorTab:debugTab"),
-            tabBarIcon: ({ focused }) => (
-              <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
-            ),
-          }}
-        />
+        {__DEV__ && (
+          <Tab.Screen
+            name="Debug"
+            component={DebugScreen}
+            options={{
+              tabBarLabel: translate("animeNavigatorTab:debugTab"),
+              tabBarIcon: ({ focused }) => (
+                <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
+              ),
+            }}
+          />
+        )}
       </Tab.Navigator>
     </AnimeProvider>
   )
