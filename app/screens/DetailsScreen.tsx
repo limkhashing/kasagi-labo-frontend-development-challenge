@@ -14,10 +14,11 @@ import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
 interface DetailsScreenProps extends AppStackScreenProps<"Details"> {}
 
+// This interface defines the structure of the anime details that will be displayed on the Details screen.
 export interface AnimeDetails {
   imageUrl: string
   title: string
-  datePublished: string
+  dateAired: string
   duration: string
   synopsis: string
   genres: string
@@ -54,7 +55,7 @@ export const DetailsScreen: FC<DetailsScreenProps> = function DetailsScreen() {
 
         <View style={themed([$bottomContainer, $bottomContainerInsets])}>
           <Text preset="heading" text={animeDetails.title} />
-          <Text preset="subheading" text={animeDetails.datePublished} />
+          <Text preset="subheading" text={animeDetails.dateAired} />
           <Text preset="subheading" text={animeDetails.duration} />
           <Text preset="default" text={animeDetails.synopsis} />
           <Text preset="formLabel" text={animeDetails.genres} />
