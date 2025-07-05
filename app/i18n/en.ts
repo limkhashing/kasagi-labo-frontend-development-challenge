@@ -27,6 +27,11 @@ const en = {
       content: "No data found yet. Try clicking the button to refresh or reload the app.",
       button: "Let's try this again",
     },
+    errorState: {
+      heading: "An error occurred",
+      content: "There was an error fetching the anime list. Please try again later.",
+      button: "Retry",
+    },
   },
   noFavoritesEmptyState: {
     heading: "This looks a bit empty",

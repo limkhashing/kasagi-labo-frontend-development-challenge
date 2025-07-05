@@ -18,7 +18,7 @@ import { load, save } from "@/utils/storage"
 
 export type AnimeContextType = {
   animeForList: JikenAnimeItem[]
-  fetchAnimeList: (page: number, limit?: number) => Promise<void>
+  fetchAnimeList: (page: number, limit?: number) => Promise<boolean>
   hasFavourite: (episode: JikenAnimeItem) => boolean
   toggleFavourite: (episode: JikenAnimeItem) => void
 }
@@ -54,8 +54,10 @@ export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ child
     const response = await api.fetchAnimeList(page, limit)
     if (response.kind === "ok") {
       setAnimeList((prev) => (page === 1 ? response.animeList : [...prev, ...response.animeList]))
+      return false // no error
     } else {
       console.error(`Error fetching anime: ${JSON.stringify(response)}`)
+      return true // error occurred
     }
   }, [])
 
