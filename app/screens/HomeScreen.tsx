@@ -19,6 +19,7 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
   const { themed } = useAppTheme()
   const [refreshing, setRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isError, setError] = useState(false)
   const [page, setPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
@@ -28,7 +29,8 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
   useEffect(() => {
     ;(async function load() {
       setIsLoading(true)
-      await fetchAnimeList(1)
+      const isError = await fetchAnimeList(1)
+      setError(isError)
       setIsLoading(false)
     })()
   }, [fetchAnimeList])
@@ -36,14 +38,17 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
   // simulate a longer refresh, if the refresh is too fast for UX
   async function manualRefresh() {
     setRefreshing(true)
-    await Promise.allSettled([fetchAnimeList(1), delay(750)])
+    const isError = await fetchAnimeList(1)
+    setError(isError)
+    await delay(750)
     setRefreshing(false)
   }
 
   const handleLoadMore = async () => {
     if (isLoadingMore || isLoading) return
     setIsLoadingMore(true)
-    await fetchAnimeList(page + 1)
+    const isError = await fetchAnimeList(page + 1)
+    setError(isError)
     setPage((prev) => prev + 1)
     setIsLoadingMore(false)
   }
@@ -66,8 +71,9 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
             <EmptyState
               preset="generic"
               style={themed($emptyState)}
-              headingTx={"homeTab:emptyState.heading"}
-              contentTx={"homeTab:emptyState.content"}
+              headingTx={isError ? "homeTab:errorState.heading" : "homeTab:emptyState.heading"}
+              contentTx={isError ? "homeTab:errorState.content" : "homeTab:emptyState.content"}
+              buttonTx={isError ? "homeTab:errorState.button" : "homeTab:emptyState.button"}
               buttonOnPress={manualRefresh}
               ImageProps={{ resizeMode: "contain" }}
             />

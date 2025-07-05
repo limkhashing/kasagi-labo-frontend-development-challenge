@@ -91,15 +91,8 @@ export class Api {
       if (problem) return problem
     }
 
-    try {
-      const animeList = response.data?.data ?? []
-      return { kind: "ok", animeList: animeList }
-    } catch (e) {
-      if (__DEV__ && e instanceof Error) {
-        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
-      }
-      return { kind: "bad-data" }
-    }
+    const animeList = response.data?.data ?? []
+    return { kind: "ok", animeList: animeList }
   }
 }
 
