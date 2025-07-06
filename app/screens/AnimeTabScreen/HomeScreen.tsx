@@ -19,7 +19,7 @@ import { delay } from "@/utils/delay"
 /**
  * In a real application, these genres would likely be fetched from an API or defined in a more dynamic way.
  * Here, we define a static list for demonstration purposes.
- * The genres array is reference from the Jikan API https://api.jikan.moe/v4/genres/anime
+ * The genres array is referred based on the Jikan API https://api.jikan.moe/v4/genres/anime
  */
 const genres = [
   { mal_id: 1, name: "Action" },
