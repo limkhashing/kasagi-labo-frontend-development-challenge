@@ -113,6 +113,7 @@ export const iconRegistry = {
   home: require("@assets/icons/home.png"),
   debug: require("@assets/icons/debug.png"),
   heart: require("@assets/icons/heart.png"),
+  check: require("../../assets/icons/check.png"),
 }
 
 const $imageStyleBase: ImageStyle = {
