@@ -12,25 +12,25 @@ import { ActivityIndicator } from "react-native"
 
 import { translate } from "@/i18n/translate"
 import { api } from "@/services/api"
-import { JikenAnimeItem } from "@/services/api/types"
+import { JikanAnimeItem } from "@/services/api/types"
 import { formatDate } from "@/utils/formatDate"
 import { load, save } from "@/utils/storage"
 
+const FAVOURITES_KEY = "favourites"
+
 export type AnimeContextType = {
-  animeForList: JikenAnimeItem[]
-  fetchAnimeList: (page: number, limit?: number) => Promise<boolean>
-  hasFavourite: (episode: JikenAnimeItem) => boolean
-  toggleFavourite: (episode: JikenAnimeItem) => void
+  animeForList: JikanAnimeItem[]
+  fetchAnimeList: (page: number, limit?: number, genres?: number[]) => Promise<boolean>
+  hasFavourite: (episode: JikanAnimeItem) => boolean
+  toggleFavouriteStatus: (episode: JikanAnimeItem) => void
 }
 
 export const AnimeContext = createContext<AnimeContextType | null>(null)
 
 export interface AnimeProviderProps {}
 
-const FAVOURITES_KEY = "favourites"
-
 export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ children }) => {
-  const [animeList, setAnimeList] = useState<JikenAnimeItem[]>([])
+  const [animeList, setAnimeList] = useState<JikanAnimeItem[]>([])
   const [favourites, setFavourites] = useState<number[]>([])
   const [favouritesLoaded, setFavouritesLoaded] = useState(false)
 
@@ -50,23 +50,32 @@ export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ child
     }
   }, [favourites, favouritesLoaded])
 
-  const fetchAnimeList = useCallback(async (page: number = 1, limit: number = 25) => {
-    const response = await api.fetchAnimeList(page, limit)
-    if (response.kind === "ok") {
-      setAnimeList((prev) => (page === 1 ? response.animeList : [...prev, ...response.animeList]))
-      return false // no error
-    } else {
-      console.error(`Error fetching anime: ${JSON.stringify(response)}`)
-      return true // error occurred
-    }
-  }, [])
+  /**
+   * Fetches a list of anime from the API.
+   * @param page - The page number to fetch (default is 1).
+   * @param limit - The number of items per page (default is 25).
+   * @return A promise that resolves to a boolean indicating if there was an error.
+   */
+  const fetchAnimeList = useCallback(
+    async (page: number = 1, limit: number = 25, genres?: number[]) => {
+      const response = await api.fetchAnimeList(page, limit, genres)
+      if (response.kind === "ok") {
+        setAnimeList((prev) => (page === 1 ? response.animeList : [...prev, ...response.animeList]))
+        return false
+      } else {
+        console.error(`Error fetching anime: ${JSON.stringify(response)}`)
+        return true
+      }
+    },
+    [],
+  )
 
   const hasFavourite = useCallback(
-    (anime: JikenAnimeItem) => favourites.some((id) => id === anime.mal_id),
+    (anime: JikanAnimeItem) => favourites.some((id) => id === anime.mal_id),
     [favourites],
   )
 
-  const toggleFavourite = useCallback((anime: JikenAnimeItem) => {
+  const toggleFavouriteStatus = useCallback((anime: JikanAnimeItem) => {
     setFavourites((previous) =>
       previous.includes(anime.mal_id)
         ? previous.filter((favourite) => favourite !== anime.mal_id)
@@ -82,7 +91,7 @@ export const AnimeProvider: FC<PropsWithChildren<AnimeProviderProps>> = ({ child
     animeForList,
     fetchAnimeList,
     hasFavourite,
-    toggleFavourite,
+    toggleFavouriteStatus,
   }
 
   if (!favouritesLoaded) return <ActivityIndicator />
@@ -97,7 +106,7 @@ export const useAnimeList = () => {
 }
 
 // A helper hook to extract and format anime details
-export const useAnimeDetails = (anime: JikenAnimeItem) => {
+export const useAnimeDetails = (anime: JikanAnimeItem) => {
   const { hasFavourite } = useAnimeList()
 
   const imageUrl = anime.images?.jpg?.image_url || anime.images?.webp?.image_url || ""

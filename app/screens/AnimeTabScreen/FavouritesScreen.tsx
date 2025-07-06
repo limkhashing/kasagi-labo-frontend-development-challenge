@@ -2,14 +2,14 @@ import { FC } from "react"
 import { View, ViewStyle } from "react-native"
 import { ContentStyle } from "@shopify/flash-list"
 
-import { AnimeCard } from "@/components/Anime/AnimeCard"
 import { EmptyState } from "@/components/EmptyState"
 import { ListView } from "@/components/ListView"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useAnimeList } from "@/context/AnimeContext"
 import { AnimeTabScreenProps } from "@/navigators/AnimeTabNavigator"
-import type { JikenAnimeItem } from "@/services/api/types"
+import { AnimeCard } from "@/screens/AnimeTabScreen/AnimeCard"
+import type { JikanAnimeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -24,7 +24,7 @@ export const FavouritesScreen: FC<AnimeTabScreenProps<"Favourites">> = function 
 
   return (
     <Screen preset="fixed" contentContainerStyle={$styles.flex1}>
-      <ListView<JikenAnimeItem>
+      <ListView<JikanAnimeItem>
         numColumns={2}
         contentContainerStyle={themed([$styles.container, $listContentContainer])}
         data={favouritesList}
