@@ -72,8 +72,26 @@ jest.mock("@/components/EmptyState", () => ({
 
 describe("HomeScreen", () => {
   const mockAnimeList = [
-    { mal_id: 1, title: "Anime 1", images: {}, aired: { from: "" }, genres: [] },
-    { mal_id: 2, title: "Anime 2", images: {}, aired: { from: "" }, genres: [] },
+    {
+      mal_id: 1,
+      title: "Anime 1",
+      images: {},
+      aired: { from: "" },
+      genres: [
+        { mal_id: 1, name: "Action" },
+        { mal_id: 8, name: "Comedy" },
+      ],
+    },
+    {
+      mal_id: 2,
+      title: "Anime 2",
+      images: {},
+      aired: { from: "" },
+      genres: [
+        { mal_id: 8, name: "Comedy" },
+        { mal_id: 46, name: "Award Winning" },
+      ],
+    },
   ]
   const mockFetchAnimeList = jest.fn().mockResolvedValue(false)
   const mockToggleFavouriteStatus = jest.fn()
@@ -90,20 +108,34 @@ describe("HomeScreen", () => {
     })
   })
 
-  it("renders anime cards", () => {
+  it("Should renders anime cards", async () => {
     const { getByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
-    expect(getByTestId("anime-card-1")).toBeTruthy()
-    expect(getByTestId("anime-card-2")).toBeTruthy()
+    await waitFor(() => {
+      expect(getByTestId("anime-card-1")).toBeTruthy()
+      expect(getByTestId("anime-card-2")).toBeTruthy()
+    })
   })
 
-  it("calls fetchAnimeList on mount", async () => {
+  it("Should calls fetchAnimeList on mount", async () => {
     render(<HomeScreen navigation={{}} route={{}} />)
     await waitFor(() => {
       expect(mockFetchAnimeList).toHaveBeenCalledWith(1, undefined, [])
     })
   })
 
-  it("refreshes on refresh button press", async () => {
+  it("Should shows empty state when animeForList is empty", async () => {
+    useAnimeList.mockReturnValue({
+      animeForList: [],
+      fetchAnimeList: mockFetchAnimeList,
+      toggleFavouriteStatus: mockToggleFavouriteStatus,
+    })
+    const { getByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
+    await waitFor(() => {
+      expect(getByTestId("empty-state")).toBeTruthy()
+    })
+  })
+
+  it("Should refreshes on press refresh button for empty state", async () => {
     const { getByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
     mockFetchAnimeList.mockClear()
     fireEvent.press(getByTestId("refresh-button"))
@@ -113,15 +145,49 @@ describe("HomeScreen", () => {
     })
   })
 
-  it("shows empty state when no anime", async () => {
-    useAnimeList.mockReturnValue({
-      animeForList: [],
-      fetchAnimeList: mockFetchAnimeList,
-      toggleFavouriteStatus: mockToggleFavouriteStatus,
-    })
-    const { getByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
+  it("Should updates selected genres when a genre checkbox is toggled", async () => {
+    mockFetchAnimeList.mockClear()
+
+    const { getAllByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
+
     await waitFor(() => {
-      expect(getByTestId("empty-state")).toBeTruthy()
+      const checkboxes = getAllByTestId("genre-checkbox")
+      checkboxes[0].props.onChange({ target: { checked: true } })
+      expect(mockFetchAnimeList).toHaveBeenCalledWith(1, undefined, [1])
+    })
+  })
+
+  it("Should call toggleFavouriteStatus when favorite button is pressed", async () => {
+    const { getByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
+
+    await waitFor(() => {
+      fireEvent.press(getByTestId("favorite-button-1"))
+      expect(mockToggleFavouriteStatus).toHaveBeenCalledWith(
+        expect.objectContaining({ mal_id: 1, title: "Anime 1" }),
+      )
+      fireEvent.press(getByTestId("favorite-button-2"))
+      expect(mockToggleFavouriteStatus).toHaveBeenCalledWith(
+        expect.objectContaining({ mal_id: 2, title: "Anime 2" }),
+      )
+    })
+  })
+
+  it("Should call toggleFavouriteStatus again when unfavoriting an anime card", async () => {
+    const { getByTestId } = render(<HomeScreen navigation={{}} route={{}} />)
+
+    await waitFor(() => {
+      // Favorite
+      fireEvent.press(getByTestId("favorite-button-1"))
+      expect(mockToggleFavouriteStatus).toHaveBeenCalledWith(
+        expect.objectContaining({ mal_id: 1, title: "Anime 1" }),
+      )
+
+      // Unfavorite (simulate toggling)
+      fireEvent.press(getByTestId("favorite-button-1"))
+      expect(mockToggleFavouriteStatus).toHaveBeenCalledTimes(2)
+      expect(mockToggleFavouriteStatus).toHaveBeenLastCalledWith(
+        expect.objectContaining({ mal_id: 1, title: "Anime 1" }),
+      )
     })
   })
 })
