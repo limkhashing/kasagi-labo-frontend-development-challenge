@@ -43,7 +43,6 @@ export const HomeScreen: FC<AnimeTabScreenProps<"Home">> = function HomeScreen(_
     // Fetch anime list with selected genres whenever they change
     ;(async () => {
       setIsLoading(true)
-      console.log(selectedGenres)
       const isError = await fetchAnimeList(1, undefined, selectedGenres)
       setError(isError)
       setIsLoading(false)
