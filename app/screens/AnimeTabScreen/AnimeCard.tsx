@@ -17,7 +17,7 @@ import { Text } from "@/components/Text"
 import { useAnimeDetails } from "@/context/AnimeContext"
 import { translate } from "@/i18n/translate"
 import { AnimeDetails } from "@/screens/DetailsScreen"
-import type { JikenAnimeItem } from "@/services/api/types"
+import type { JikanAnimeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -27,7 +27,7 @@ export function AnimeCard({
   showFavoriteButton = true,
   onPressFavorite,
 }: {
-  animeItem: JikenAnimeItem
+  animeItem: JikanAnimeItem
   showFavoriteButton?: boolean
   onPressFavorite?: () => void
 }) {
