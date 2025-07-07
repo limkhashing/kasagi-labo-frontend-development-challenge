@@ -38,6 +38,9 @@ kasagi-labo-frontend-development-challenge/
 │ ...
 ```
 
+## Navigation
+![image](https://github.com/user-attachments/assets/b0d34b0d-85d0-4476-ab97-8fa26aa13f39)
+
 ## Current Limitations
 
 1. **`DetailsScreen` not able to Deeplink:**  
